@@ -32,4 +32,38 @@ public class FriendRequest implements Serializable {
     public FriendRequest() {
         this.date = LocalDateTime.now();
     }
+
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public User getSender() {
+        return this.sender;
+    }
+
+    public void setSender(User sender) {
+        this.sender = sender;
+    }
+
+    public User getReceiver() {
+        return this.receiver;
+    }
+
+    public void setReceiver(User receiver) {
+        this.receiver = receiver;
+    }
+
+    public LocalDateTime getDate() {
+        return this.date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
+
 }

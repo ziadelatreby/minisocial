@@ -3,8 +3,12 @@ package com.minisocial.minisocialapi.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.HashSet;
+
 import java.io.Serializable;
 import java.util.Set;
+
+import com.minisocial.minisocialapi.entities.notification.Notification;
 
 @Entity
 @Table(name = "users")
@@ -61,6 +65,13 @@ public class User implements Serializable {
     @JoinTable(name = "group_join_requests", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
     private Set<Group> requestedGroups;
 
+    
+    @ManyToMany(mappedBy = "members")
+    private Set<Group> groups;
+    
+    //change by @Abdelrahman map relationship with Notification
+    @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL)
+    private Set<Notification> notifications = new HashSet<>();
 
     public User() {
     }
