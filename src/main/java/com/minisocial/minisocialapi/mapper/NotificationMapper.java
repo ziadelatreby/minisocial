@@ -39,7 +39,6 @@ public class NotificationMapper {
 
     private void mapGroupJoin(GroupJoinNotification notification, NotificationDTO dto) {
         dto.addData("groupId", notification.getGroup().getId());
-        dto.addData("groupJoinRequestId", notification.getGroupJoinRequest().getId());
         dto.addData("joinedUserId", notification.getJoinedUser().getId());
     }
     private void mapGroupLeave(GroupLeaveNotification notification, NotificationDTO dto) {
@@ -57,29 +56,17 @@ public class NotificationMapper {
         dto.addData("likerId", notification.getLiker().getId());
     }
 
+    @Inject
     private UserRepository userRepo;
+    @Inject
     private FriendRequestRepository friendRequestRepo;
+    @Inject
     private GroupRepository groupRepo;
-    private GroupJoinRequestRepository groupJoinRequestRepo;
+    @Inject
     private PostRepository postRepo;
+    @Inject
     private CommentRepository commentRepo;
 
-    @Inject
-    NotificationMapper (
-        UserRepository userRepo,
-        FriendRequestRepository friendRequestRepo,
-        GroupRepository groupRepo,
-        GroupJoinRequestRepository groupJoinRequestRepo,
-        PostRepository postRepo,
-        CommentRepository commentRepo
-    ){
-        this.userRepo = userRepo;
-        this.friendRequestRepo = friendRequestRepo;
-        this.groupRepo = groupRepo;
-        this.groupJoinRequestRepo = groupJoinRequestRepo;
-        this.postRepo = postRepo;
-        this.commentRepo = commentRepo;
-    }
 
 
 
@@ -97,7 +84,7 @@ public class NotificationMapper {
                 returnedNoti=dtoToFRN(dto, recipient, userRepo, friendRequestRepo);
             break;
             case "GROUP_JOINED" :
-                returnedNoti=dtoToGJN(dto, recipient, userRepo, groupRepo, groupJoinRequestRepo);
+                returnedNoti=dtoToGJN(dto, recipient, userRepo, groupRepo);
             break;
             case "GROUP_LEFT":
                 returnedNoti=dtoToGLN(dto, recipient, userRepo, groupRepo);
@@ -125,11 +112,10 @@ public class NotificationMapper {
                 return entity;
     }
 
-    private GroupJoinNotification dtoToGJN(NotificationDTO dto,User recipient, UserRepository userRepo, GroupRepository groupRepo, GroupJoinRequestRepository groupJoinRequestRepo) {
+    private GroupJoinNotification dtoToGJN(NotificationDTO dto,User recipient, UserRepository userRepo, GroupRepository groupRepo) {
                 GroupJoinNotification entity = new GroupJoinNotification();
                 mapBaseFields(dto, entity, recipient);
                 entity.setGroup(groupRepo.findById((Long) dto.getData("groupId")));
-                entity.setGroupJoinRequest(groupJoinRequestRepo.findById((Long) dto.getData("groupJoinRequestId")));
                 entity.setJoinedUser(userRepo.findById((Long) dto.getData("joinedUserId")));
                 return entity;
     }

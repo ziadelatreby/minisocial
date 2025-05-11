@@ -57,17 +57,18 @@ public class User implements Serializable {
     )
     private Set<User> friends;
 
+    //groups that the user is offically member of
     @OneToMany(mappedBy = "user")
     private Set<UserGroup> userGroups;
 
-
+    //groups that the user has requested to join
     @ManyToMany
     @JoinTable(name = "group_join_requests", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
     private Set<Group> requestedGroups;
 
     
-    @ManyToMany(mappedBy = "members")
-    private Set<Group> groups;
+    // @ManyToMany(mappedBy = "members")
+    // private Set<Group> groups;
     
     //change by @Abdelrahman map relationship with Notification
     @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL)

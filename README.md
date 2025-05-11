@@ -147,7 +147,11 @@ Notification.java //abstract class
    * 
 
 **config notes :**
+* i use jboss-eap-8
 * i have added the following seciton to standalone-full.xml file :
+* add this to the messaging subsystem in ur config 
+  * NOTE that it can uses slightly different formate to specify the jms entities depending on SERVER VERSION
+  * save a copy of the default messaging subsystem in ur config and ask chatgbt to make a suitable one
 ```xml
 <subsystem xmlns="urn:jboss:domain:messaging-activemq:15.0">
   <server name="default">

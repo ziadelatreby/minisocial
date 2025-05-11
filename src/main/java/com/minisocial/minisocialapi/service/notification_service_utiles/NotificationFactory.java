@@ -3,16 +3,14 @@ package com.minisocial.minisocialapi.service.notification_service_utiles;
 import com.minisocial.minisocialapi.entities.Comment;
 import com.minisocial.minisocialapi.entities.FriendRequest;
 import com.minisocial.minisocialapi.entities.Group;
-import com.minisocial.minisocialapi.entities.GroupJoinRequest;
 import com.minisocial.minisocialapi.entities.Post;
 import com.minisocial.minisocialapi.entities.User;
 import com.minisocial.minisocialapi.entities.notification.*;
 
-import jakarta.ejb.Stateless;
 
-@Stateless
 public class NotificationFactory {
 
+    
     private NotificationFactory() {
         // Private constructor to prevent instantiation
     }
@@ -29,8 +27,8 @@ public class NotificationFactory {
         return new FriendRequestNotification(recipient, requester, friendRequest);
     }
 
-    public static GroupJoinNotification createGroupJoinNotification(User recipient, User joinedUser, Group group, GroupJoinRequest request) {
-        return new GroupJoinNotification(recipient, joinedUser, group, request);
+    public static GroupJoinNotification createGroupJoinNotification(User recipient, User joinedUser, Group group) {
+        return new GroupJoinNotification(recipient, joinedUser, group);
     }
 
     public static GroupLeaveNotification createGroupLeaveNotification(User recipient, User leftUser, Group group, boolean wasKicked) {

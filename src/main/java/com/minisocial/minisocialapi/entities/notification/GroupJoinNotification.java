@@ -1,6 +1,5 @@
 package com.minisocial.minisocialapi.entities.notification;
 
-import com.minisocial.minisocialapi.entities.GroupJoinRequest;
 import com.minisocial.minisocialapi.entities.User;
 import com.minisocial.minisocialapi.entities.Group;
 
@@ -15,9 +14,6 @@ import jakarta.persistence.OneToOne;
 @DiscriminatorValue("GROUP_JOINED")
 public class GroupJoinNotification extends Notification {
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="group_join_request_id")
-    private GroupJoinRequest groupJoinRequest;
     
 
     // if the recipient is the group owner (or admin), this is the user who joined
@@ -31,19 +27,12 @@ public class GroupJoinNotification extends Notification {
 
     public GroupJoinNotification() {}
     
-    public GroupJoinNotification(User recipient, User joinedUser, Group group, GroupJoinRequest request) {
+    public GroupJoinNotification(User recipient, User joinedUser, Group group) {
         super(recipient, "GROUP_JOINED", "User " + joinedUser.getName() + " joined group " + group.getName());
         this.joinedUser = joinedUser;
         this.group = group;
-        this.groupJoinRequest = request;
     }
 
-    public GroupJoinRequest getGroupJoinRequest() {
-        return groupJoinRequest;
-    }
-    public void setGroupJoinRequest(GroupJoinRequest groupJoinRequest) {
-        this.groupJoinRequest = groupJoinRequest;
-    }
     public User getJoinedUser() {
         return joinedUser;
     }

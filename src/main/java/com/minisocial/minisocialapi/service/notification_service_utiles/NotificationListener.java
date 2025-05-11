@@ -14,7 +14,7 @@ import jakarta.jms.ObjectMessage;
 import jakarta.jms.JMSException;
 
 @MessageDriven(activationConfig = {
-    @ActivationConfigProperty(propertyName = "destinationType",   propertyValue = "javax.jms.Queue"),
+    @ActivationConfigProperty(propertyName = "destinationType",   propertyValue = "jakarta.jms.Queue"),
     @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "java:/jms/queue/Notifications"),
     @ActivationConfigProperty(propertyName = "maxSession",        propertyValue = "10"),
     @ActivationConfigProperty(propertyName = "acknowledgeMode",    propertyValue = "Auto-acknowledge")
@@ -22,14 +22,11 @@ import jakarta.jms.JMSException;
 
 public class NotificationListener implements MessageListener {
 
+    @Inject
     private NotificationMapper notificationMapper;
+    @Inject
     private NotificationRepository notificationRepository;
 
-    @Inject
-    public NotificationListener(NotificationMapper notificationMapper, NotificationRepository notificationRepository) {
-        this.notificationMapper = notificationMapper;
-        this.notificationRepository = notificationRepository;
-    }
 
     @Override
     public void onMessage(Message message) {
