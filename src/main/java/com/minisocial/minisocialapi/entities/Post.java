@@ -1,4 +1,4 @@
-package com.minisocial.minisocialapi.entity;
+package com.minisocial.minisocialapi.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -39,7 +39,10 @@ public class Post implements Serializable {
     
     @OneToMany(mappedBy = "post")
     private Set<Comment> comments;
-    
+
+
+    // a logic for making sure a user doesn't add more than one like to the same post must be applied(manual code validation)
+    // since we don't have a mechanism to add a composite pk on user_id, post_id
     @ManyToMany
     @JoinTable(
         name = "post_likes",
@@ -47,7 +50,7 @@ public class Post implements Serializable {
         inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<User> likes;
-    
+
     public Post() {
         this.createdAt = LocalDateTime.now();
     }
