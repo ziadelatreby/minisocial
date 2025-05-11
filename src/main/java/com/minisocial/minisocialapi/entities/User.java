@@ -52,10 +52,16 @@ public class User implements Serializable {
         inverseJoinColumns = @JoinColumn(name = "friend_id")
     )
     private Set<User> friends;
-    
-    @ManyToMany(mappedBy = "members")
-    private Set<Group> groups;
-    
+
+    @OneToMany(mappedBy = "user")
+    private Set<UserGroup> userGroups;
+
+
+    @ManyToMany
+    @JoinTable(name = "group_join_requests", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
+    private Set<Group> requestedGroups;
+
+
     public User() {
     }
     
@@ -148,11 +154,11 @@ public class User implements Serializable {
         this.friends = friends;
     }
 
-    public Set<Group> getGroups() {
-        return groups;
+    public Set<UserGroup> getGroups() {
+        return userGroups;
     }
 
-    public void setGroups(Set<Group> groups) {
-        this.groups = groups;
+    public void setGroups(Set<UserGroup> groups) {
+        this.userGroups = groups;
     }
 }
