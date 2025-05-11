@@ -17,7 +17,6 @@ public class Comment implements Serializable {
     @Column(nullable = false, length = 500)
     private String content;
     
-    @NotNull
     @Column(nullable = false)
     private LocalDateTime createdAt;
     
