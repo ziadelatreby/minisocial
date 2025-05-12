@@ -10,6 +10,8 @@ public class UserRepository {
     @PersistenceContext
     private EntityManager em;
 
+
+
     public User findByEmail(String email) {
         return em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
                 .setParameter("email", email)
@@ -20,5 +22,9 @@ public class UserRepository {
 
     public void save(User user) {
         em.persist(user);
+    }
+
+    public User findById(int id) {
+        return em.find(User.class, id);
     }
 }
