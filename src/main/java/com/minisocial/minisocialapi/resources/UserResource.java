@@ -1,5 +1,6 @@
 package com.minisocial.minisocialapi.resources;
 
+import com.minisocial.minisocialapi.dtos.UserDTO;
 // import com.minisocial.minisocialapi.dtos.UserDTO;
 import com.minisocial.minisocialapi.entities.User;
 import com.minisocial.minisocialapi.services.UserService;
