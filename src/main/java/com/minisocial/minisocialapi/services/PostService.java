@@ -103,4 +103,23 @@ public class PostService {
 
         return post;
     }
+
+    public boolean deletePost(Long userId, Long postId){
+
+        User user = userRepository.findById(userId);
+        if(user == null){
+            throw new NotFoundException("User not found");
+        }
+        Post post = postRepository.findById(postId);
+        if(post == null){
+            throw new NotFoundException("Post not found");
+        }
+        if(!post.getUser().getId().equals(userId)){
+            throw new NotFoundException("unauthorized user to delete this post");
+        }
+
+        postRepository.delete(post);
+
+        return true;
+    }
 }

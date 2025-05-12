@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.minisocial.minisocialapi.dtos.PostDTO;
 import com.minisocial.minisocialapi.entities.Post;
+import com.minisocial.minisocialapi.errors.NotFoundException;
 import com.minisocial.minisocialapi.mapper.PostMapper;
 import com.minisocial.minisocialapi.repositories.PostRepository;
 import com.minisocial.minisocialapi.repositories.UserRepository;
@@ -16,6 +17,7 @@ import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
@@ -101,4 +103,32 @@ public Response editPost(@PathParam("postId") Long postId,
     return Response.ok(postMapper.toDTO(editedPost)).build();
 }
 
+@DELETE
+@Path("/{postId}")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+public Response deletePost(@PathParam("postId") Long postId,
+                          @Context HttpServletRequest ctx){
+    long userId = (long) ctx.getAttribute(ctxUserIdAttributeName);
+
+    if(userRepository.findById(userId) == null){
+        return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    try {
+        boolean deleted = postService.deletePost(userId, postId);
+        if(!deleted){
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+    } catch (NotFoundException e) {
+        if(e.getMessage().equals("unauthorized user to delete this post")){
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        if(e.getMessage().equals("Post not found")){
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+    return Response.noContent().build();
+}
 }

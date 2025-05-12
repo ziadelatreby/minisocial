@@ -39,4 +39,9 @@ public class PostRepository {
         .setParameter("groupId", groupId)
         .getResultList();
     }
+
+    @Transactional
+    public void delete(Post post){
+        em.remove(post);
+    }
 }
