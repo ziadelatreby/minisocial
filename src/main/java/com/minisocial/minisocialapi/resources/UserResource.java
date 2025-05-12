@@ -1,9 +1,13 @@
 package com.minisocial.minisocialapi.resources;
 
+import com.minisocial.minisocialapi.dtos.UserDTO;
 import com.minisocial.minisocialapi.entities.User;
 import com.minisocial.minisocialapi.services.UserService;
 import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -36,6 +40,18 @@ public class UserResource {
 
 
 
+        return Response.status(Response.Status.OK).entity(res).type(MediaType.APPLICATION_JSON).build();
+    }
+
+    @POST
+    @Path("/is-authenticated-demo")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response isAuth(User user, @Context HttpServletRequest ctx) {
+        String userId = ctx.getAttribute("ctxUserId").toString(); // extract the jwt userId, now we have the id of the authenticted user
+        HashMap<String, Object> res = new HashMap<>();
+        res.put("user", user);
+        res.put("userId", userId);
         return Response.status(Response.Status.OK).entity(res).type(MediaType.APPLICATION_JSON).build();
     }
 }
