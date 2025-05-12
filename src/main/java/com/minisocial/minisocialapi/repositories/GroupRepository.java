@@ -1,4 +1,4 @@
-package com.minisocial.minisocialapi.repository;
+package com.minisocial.minisocialapi.repositories;
 
 import com.minisocial.minisocialapi.entities.Group;
 

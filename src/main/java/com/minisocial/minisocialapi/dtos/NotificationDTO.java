@@ -1,4 +1,4 @@
-package com.minisocial.minisocialapi.dto;
+package com.minisocial.minisocialapi.dtos;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

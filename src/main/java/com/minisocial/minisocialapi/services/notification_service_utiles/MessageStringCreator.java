@@ -1,4 +1,4 @@
-package com.minisocial.minisocialapi.service.notification_service_utiles;
+package com.minisocial.minisocialapi.services.notification_service_utiles;
 
 import com.minisocial.minisocialapi.entities.notification.*;
 

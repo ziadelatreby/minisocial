@@ -1,9 +1,9 @@
 package com.minisocial.minisocialapi.mapper;
 
-import com.minisocial.minisocialapi.dto.NotificationDTO;
+import com.minisocial.minisocialapi.dtos.NotificationDTO;
 import com.minisocial.minisocialapi.entities.notification.*;
 import com.minisocial.minisocialapi.entities.User;
-import com.minisocial.minisocialapi.repository.*;
+import com.minisocial.minisocialapi.repositories.*;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

@@ -1,4 +1,4 @@
-package com.minisocial.minisocialapi.service.notification_service_utiles;
+package com.minisocial.minisocialapi.services.notification_service_utiles;
 
 import jakarta.annotation.Resource;
 import jakarta.ejb.Stateless;
@@ -9,7 +9,7 @@ import jakarta.jms.ObjectMessage;
 import jakarta.jms.Queue;
 
 
-import com.minisocial.minisocialapi.dto.NotificationDTO;
+import com.minisocial.minisocialapi.dtos.NotificationDTO;
 
 @Stateless
 public class NotificationSender {

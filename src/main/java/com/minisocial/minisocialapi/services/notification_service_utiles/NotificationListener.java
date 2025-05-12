@@ -1,8 +1,8 @@
-package com.minisocial.minisocialapi.service.notification_service_utiles;
+package com.minisocial.minisocialapi.services.notification_service_utiles;
 
-import com.minisocial.minisocialapi.dto.NotificationDTO;
+import com.minisocial.minisocialapi.dtos.NotificationDTO;
 import com.minisocial.minisocialapi.mapper.NotificationMapper;
-import com.minisocial.minisocialapi.repository.NotificationRepository;
+import com.minisocial.minisocialapi.repositories.NotificationRepository;
 import com.minisocial.minisocialapi.entities.notification.Notification;
 
 import jakarta.ejb.ActivationConfigProperty;

@@ -69,11 +69,6 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user")
     private Set<UserGroup> userGroups;
 
-    //groups that the user has requested to join
-
-    @OneToMany(mappedBy = "user")
-    private Set<UserGroup> userGroups;
-
 
     @ManyToMany
     @JoinTable(name = "group_join_requests", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
@@ -187,7 +182,6 @@ public class User implements Serializable {
         this.userGroups = groups;
     }
 
-<<<<<<< HEAD
     public Set<Notification> getNotifications() {
         return notifications;
     }
@@ -196,7 +190,6 @@ public class User implements Serializable {
         this.notifications = notifications;
     }
 
-=======
     // helprs
 
     public boolean hasValidRole() {
@@ -206,5 +199,4 @@ public class User implements Serializable {
     public UserDTO toDTO() {
         return new UserDTO(id, name, email, role, bio);
     }
->>>>>>> dev
 }

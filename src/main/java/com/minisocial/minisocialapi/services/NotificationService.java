@@ -1,10 +1,10 @@
-package com.minisocial.minisocialapi.service;
+package com.minisocial.minisocialapi.services;
 
-import com.minisocial.minisocialapi.dto.NotificationDTO;
+import com.minisocial.minisocialapi.dtos.NotificationDTO;
 import com.minisocial.minisocialapi.entities.notification.Notification;
 import com.minisocial.minisocialapi.mapper.NotificationMapper;
-import com.minisocial.minisocialapi.service.notification_service_utiles.MessageStringCreator;
-import com.minisocial.minisocialapi.service.notification_service_utiles.NotificationSender;
+import com.minisocial.minisocialapi.services.notification_service_utiles.MessageStringCreator;
+import com.minisocial.minisocialapi.services.notification_service_utiles.NotificationSender;
 
 import jakarta.inject.Inject;
 import jakarta.ejb.Stateless;
