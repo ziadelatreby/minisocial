@@ -1,9 +1,12 @@
 package com.minisocial.minisocialapi.entities;
 
+import com.minisocial.minisocialapi.enums.USER_ROLE;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Locale;
 import java.util.Set;
 
 @Entity
@@ -160,5 +163,11 @@ public class User implements Serializable {
 
     public void setGroups(Set<UserGroup> groups) {
         this.userGroups = groups;
+    }
+
+    // helprs
+
+    public boolean hasValidRole() {
+        return Arrays.stream(USER_ROLE.values()).anyMatch(r -> r.name().toLowerCase(Locale.ROOT).equals(role));
     }
 }

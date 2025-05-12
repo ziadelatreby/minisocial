@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 // the table can be inserted to the db as the bridge table, containing extra relationship columns
 
 @Entity
-@Table(name="friend_requests", uniqueConstraints = @UniqueConstraint(columnNames = {"sender", "receiver"}))
+@Table(name="friend_requests", uniqueConstraints = @UniqueConstraint(columnNames = {"sender_id", "receiver_id"}))
 public class FriendRequest implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
