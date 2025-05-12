@@ -14,6 +14,9 @@ import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
+import java.util.List;
+import java.util.Set;
+
 @Stateless
 @Transactional
 public class GroupService {
@@ -148,4 +151,55 @@ public class GroupService {
         group.getJoinRequesters().remove(targetUser);
     }
 
+        public void kickMember(Long groupId, Long targetUserId, Long ctxUserId) {
+
+            if(targetUserId.equals(ctxUserId) ) {
+                throw new BadRequestException("user cannot kick himself");
+            }
+
+            if (!groupRepository.isUserAdminInGroup(ctxUserId, groupId)) {
+                throw new NotAuthorizedException("Access denied. Only admins can kick members from their group.");
+            }
+
+            User targetUser = userRepository.findById(targetUserId);
+            if (targetUser == null) {
+                throw new NotFoundException("User not found");
+            }
+
+            UserGroup userGroup = groupRepository.findUserGroup(groupId, targetUserId);
+            if (userGroup == null) {
+                throw new NotFoundException("User is not a member of this group");
+            }
+
+            // deleteUserGroup
+            groupRepository.deleteUserGroup(userGroup); // save
+        }
+
+    public void promoteMemberToAdmin(Long groupId, Long targetUserId, Long ctxUserId) {
+
+        if(targetUserId.equals(ctxUserId) ) {
+            throw new BadRequestException("user cannot promote himself");
+        }
+
+        if (!groupRepository.isUserAdminInGroup(ctxUserId, groupId)) {
+            throw new NotAuthorizedException("User is not an admin of this group.");
+        }
+
+        UserGroup userGroup = groupRepository.findUserGroup(groupId, targetUserId);
+        if (userGroup == null) {
+            throw new NotFoundException("User is not a member of this group");
+        }
+
+        userGroup.setRole(USER_GROUP_ROLE.ADMIN);
+        groupRepository.updateUserGroup(userGroup);
+    }
+
+
+    public List<User> getGroupJoinRequests(Long groupId, Long ctxUserId) {
+        if (!groupRepository.isUserAdminInGroup(ctxUserId, groupId)) {
+            throw new NotAuthorizedException("Only admins can view join requests");
+        }
+
+        return groupRepository.getJoinRequestsForGroup(groupId);
+    }
 }

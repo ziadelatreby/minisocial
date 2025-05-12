@@ -39,7 +39,8 @@ public class User implements Serializable {
     @NotNull
     @Column(nullable = false)
     private String role;
-    
+
+
     @OneToMany(mappedBy = "user")
     private Set<Post> posts;
     

@@ -2,6 +2,7 @@ package com.minisocial.minisocialapi.resources;
 
 import com.minisocial.minisocialapi.dtos.UserDTO;
 import com.minisocial.minisocialapi.entities.Group;
+import com.minisocial.minisocialapi.entities.User;
 import com.minisocial.minisocialapi.enums.GROUP_TYPE;
 import com.minisocial.minisocialapi.services.GroupService;
 import jakarta.inject.Inject;
@@ -12,7 +13,9 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Path( "/groups")
 public class GroupResource {
@@ -69,4 +72,28 @@ public class GroupResource {
     }
 
 
+    @DELETE
+    @Path("/{groupId}/members/{targetUserId}")
+    public Response kickMember(@PathParam("groupId") Long groupId, @PathParam("targetUserId") Long targetUserId, @Context HttpServletRequest ctx) {
+        Long ctxUserId = (Long) ctx.getAttribute(ctxUserIdAttributeName);
+        groupService.kickMember(groupId, targetUserId, ctxUserId);
+        return Response.noContent().build();
+    }
+
+    @PUT
+    @Path("/{groupId}/members/{targetUserId}/promote")
+    public Response promoteMember(@PathParam("groupId") Long groupId, @PathParam("targetUserId") Long targetUserId, @Context HttpServletRequest ctx) {
+        Long ctxUserId = (Long) ctx.getAttribute(ctxUserIdAttributeName);
+        groupService.promoteMemberToAdmin(groupId, targetUserId, ctxUserId);
+        return Response.ok().build();
+    }
+
+    @GET
+    @Path("/{groupId}/requests")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getJoinRequests(@PathParam("groupId") Long groupId, @Context HttpServletRequest ctx) {
+        Long ctxUserId = (Long) ctx.getAttribute(ctxUserIdAttributeName);
+        List<User> res = groupService.getGroupJoinRequests(groupId, ctxUserId);
+        return Response.status(Response.Status.OK).entity(res).type(MediaType.APPLICATION_JSON).build();
+    }
 }
