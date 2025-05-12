@@ -1,7 +1,7 @@
 package com.minisocial.minisocialapi.entities;
 
 import jakarta.persistence.*;
-
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -9,33 +9,47 @@ import java.time.LocalDateTime;
 // this approach explicitly creates a bridge table entity and makes a many-to-one relationship with each side
 // the table can be inserted to the db as the bridge table, containing extra relationship columns
 
-@Table(name="friend_requests", uniqueConstraints = @UniqueConstraint(columnNames = {"receiver", "sender"}))
 @Entity
+@Table(name="friend_requests", uniqueConstraints = @UniqueConstraint(columnNames = {"sender_id", "receiver_id"}))
 public class FriendRequest implements Serializable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "receiver", nullable = false)
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_id", nullable = false)
     private User sender;
-
-    @ManyToOne
-    @JoinColumn(name = "sender", nullable = false)
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "receiver_id", nullable = false)
     private User receiver;
 
+    @NotNull
     @Column(nullable = false)
-    private LocalDateTime date;
-
-
+    private String status; // change to enum {pending, accepted, rejected}
+    
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+    
+    @Column
+    private LocalDateTime updatedAt;
+    
     public FriendRequest() {
-        this.date = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
+        this.status = "pending"; // change to enum 
     }
-
+    
+    public FriendRequest(User sender, User receiver) {
+        this.sender = sender;
+        this.receiver = receiver;
+        this.status = "pending";
+        this.createdAt = LocalDateTime.now();
+    }
+    
+    // setters and getters
 
     public Long getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(Long id) {
@@ -43,7 +57,7 @@ public class FriendRequest implements Serializable {
     }
 
     public User getSender() {
-        return this.sender;
+        return sender;
     }
 
     public void setSender(User sender) {
@@ -51,20 +65,47 @@ public class FriendRequest implements Serializable {
     }
 
     public User getReceiver() {
-        return this.receiver;
+        return receiver;
     }
 
     public void setReceiver(User receiver) {
         this.receiver = receiver;
     }
 
-    public LocalDateTime getDate() {
-        return this.date;
+    public String getStatus() {
+        return status;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void setStatus(String status) { // change to enum
+        this.status = status;
+        this.updatedAt = LocalDateTime.now();
     }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+
+
+    // public LocalDateTime getDate() {
+    //     return this.date;
+    // }
+
+    // public void setDate(LocalDateTime date) {
+    //     this.date = date;
+    // }
 
 
 }

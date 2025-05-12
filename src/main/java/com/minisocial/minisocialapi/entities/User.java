@@ -1,5 +1,7 @@
 package com.minisocial.minisocialapi.entities;
 
+import com.minisocial.minisocialapi.dtos.UserDTO;
+import com.minisocial.minisocialapi.enums.USER_ROLE;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -12,6 +14,8 @@ import com.minisocial.minisocialapi.entities.notification.Notification;
 
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Locale;
 import java.util.Set;
 
 @Entity
@@ -183,6 +187,7 @@ public class User implements Serializable {
         this.userGroups = groups;
     }
 
+<<<<<<< HEAD
     public Set<Notification> getNotifications() {
         return notifications;
     }
@@ -191,4 +196,15 @@ public class User implements Serializable {
         this.notifications = notifications;
     }
 
+=======
+    // helprs
+
+    public boolean hasValidRole() {
+        return Arrays.stream(USER_ROLE.values()).anyMatch(r -> r.name().toLowerCase(Locale.ROOT).equals(role));
+    }
+
+    public UserDTO toDTO() {
+        return new UserDTO(id, name, email, role, bio);
+    }
+>>>>>>> dev
 }
