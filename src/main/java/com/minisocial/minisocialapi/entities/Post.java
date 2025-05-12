@@ -57,6 +57,9 @@ public class Post implements Serializable {
     
     public Post(String content, User user) {
         this.createdAt = LocalDateTime.now();
+        if(content == null || content.isEmpty()){
+            throw new IllegalArgumentException("Content cannont be empty");
+        }
         this.content = content;
         this.user = user;
     }

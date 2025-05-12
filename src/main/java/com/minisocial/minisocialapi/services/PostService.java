@@ -1,0 +1,106 @@
+package com.minisocial.minisocialapi.services;
+
+import com.minisocial.minisocialapi.repositories.UserRepository;
+import com.minisocial.minisocialapi.repositories.GroupRepository;
+import com.minisocial.minisocialapi.repositories.PostRepository;
+import com.minisocial.minisocialapi.entities.User;
+import com.minisocial.minisocialapi.errors.NotFoundException;
+import com.minisocial.minisocialapi.dtos.PostDTO;
+import com.minisocial.minisocialapi.entities.Group;
+import com.minisocial.minisocialapi.entities.Post;
+
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
+
+@Stateless
+public class PostService {
+
+    @Inject
+    private UserRepository userRepository;
+
+    @Inject
+    private GroupRepository groupRepository;
+
+    @Inject
+    private PostRepository postRepository;
+
+    public Post createPost (Long userId, PostDTO postDTO ){
+        String content = postDTO.getContent();
+        String imageUrl = postDTO.getImageUrl();
+        Long groupId = postDTO.getGroupId();
+
+        Post post = null;
+        User user = userRepository.findById(userId);
+
+        if(user == null){
+            throw new NotFoundException ("User not found");
+        }
+
+        post = new Post(content, user);
+
+        if(imageUrl != null && !imageUrl.isEmpty()){
+            post.setImageUrl(imageUrl);
+        }
+
+        if(groupId != -1 && groupId != null)
+        {
+            Group group = groupRepository.findById(groupId);
+            if(group == null ){
+                throw new NotFoundException("Group not found");
+            }
+            if(!groupRepository.isUserMemberOfGroup(userId, groupId)){
+                throw new NotFoundException("User is not a member of this group");
+            }
+            post.setGroup(group);
+        }
+
+        postRepository.save(post);
+
+        return post;
+    }
+
+    public Post editPost (Long userId, Long postId, PostDTO postDTO){
+        Post post = postRepository.findById(postId);
+        if(post == null){
+            throw new NotFoundException("Post not found");
+        }
+
+        //User validation
+        if(!post.getUser().getId().equals(userId)){
+            throw new NotFoundException("User is not allowed to edit this post");
+        }
+
+        //Group validation
+        if(postDTO.getGroupId() != -1 && postDTO.getGroupId() != null){
+            Group group = groupRepository.findById(postDTO.getGroupId());
+            if(group == null){
+                throw new NotFoundException("Group not found");
+            }
+            if(!post.getGroup().getId().equals(postDTO.getGroupId())){
+                throw new NotFoundException("Cannot change group of post");
+            }
+            if(!groupRepository.isUserMemberOfGroup(userId, postDTO.getGroupId())){
+                throw new NotFoundException("User is not a member of this group");
+            }
+        }
+
+        //Content
+        if(postDTO.getContent() != null && !postDTO.getContent().isEmpty()){
+            post.setContent(postDTO.getContent());
+        }else{
+            throw new NotFoundException("Content is required !");
+        }
+        post.setContent(postDTO.getContent());
+
+
+        //Image url
+        if(postDTO.getImageUrl() != null && !postDTO.getImageUrl().isEmpty()){
+            post.setImageUrl(postDTO.getImageUrl());
+        }
+        post.setImageUrl(postDTO.getImageUrl());
+
+        postRepository.save(post);
+
+        return post;
+    }
+}

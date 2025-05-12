@@ -27,4 +27,10 @@ public class UserRepository {
     public User findById(Long id) {
         return em.find(User.class, id);
     }
+
+    public boolean existsById(Long id) {
+        return (em.createQuery("SELECT COUNT(u) FROM User u WHERE u.id = :id", Long.class)
+                .setParameter("id", id)
+                .getSingleResult()) > 0;
+    }
 }
