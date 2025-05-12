@@ -175,4 +175,12 @@ public class User implements Serializable {
     public UserDTO toDTO() {
         return new UserDTO(id, name, email, role, bio);
     }
+    public Set<Group> getRequestedGroups() {
+        return requestedGroups;
+    }
+
+    public void setRequestedGroups(Set<Group> requestedGroups) {
+        this.requestedGroups = requestedGroups;
+    }
+
 }
