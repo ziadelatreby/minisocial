@@ -5,19 +5,18 @@
              version="3.0">
     
     <!-- postgresql -->
-    <persistence-unit name="default" transaction-type="JTA">
+    <!-- <persistence-unit name="default" transaction-type="JTA">
         <jta-data-source>java:jboss/datasources/PostgreSQLDS</jta-data-source>
         <properties>
-            <!-- Properties for Hibernate -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
         </properties>
-    </persistence-unit>
+    </persistence-unit> -->
 
     <!-- h2 -->
-<!--     <persistence-unit name="minisocialPU" transaction-type="JTA">
+<persistence-unit name="minisocialPU" transaction-type="JTA">
         <jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source>
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
@@ -26,5 +25,4 @@
             <property name="hibernate.format_sql" value="true"/>
         </properties>
     </persistence-unit>
- -->
 </persistence>

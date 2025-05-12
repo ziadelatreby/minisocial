@@ -1,0 +1,886 @@
+{
+  "info": {
+    "name": "MiniSocial Connection Module",
+    "description": "Comprehensive automated testing for the Connection Management module of MiniSocial API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "3eebc546-c073-40c2-9a3f-a811ab70fd21"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Collection-level pre-request script",
+          "console.log(\"Running MiniSocial Connection Module tests...\");",
+          "",
+          "// Initialize test state if needed",
+          "if (!pm.collectionVariables.get(\"initialized\")) {",
+          "    pm.collectionVariables.set(\"initialized\", true);",
+          "    pm.collectionVariables.set(\"alice_id\", 1);",
+          "    pm.collectionVariables.set(\"bob_id\", 2);",
+          "    pm.collectionVariables.set(\"charlie_id\", 3);",
+          "    console.log(\"Test variables initialized\");",
+          "}",
+          ""
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "1. User Registration & Authentication",
+      "item": [
+        {
+          "name": "Register User 1 (Alice)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"alice@example.com\",\n    \"password\": \"password123\",\n    \"name\": \"Alice Smith\",\n    \"bio\": \"First test user\",\n    \"role\": \"member\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/minisocial-api/api/users/signup",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["minisocial-api", "api", "users", "signup"]
+            },
+            "description": "Register the first test user (Alice)"
+          }
+        },
+        {
+          "name": "Register User 2 (Bob)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"bob@example.com\",\n    \"password\": \"password123\",\n    \"name\": \"Bob Jones\",\n    \"bio\": \"Second test user\",\n    \"role\": \"member\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/minisocial-api/api/users/signup",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["minisocial-api", "api", "users", "signup"]
+            },
+            "description": "Register the second test user (Bob)"
+          }
+        },
+        {
+          "name": "Sign In - Alice",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Capture token from response\r",
+                  "var jsonData = JSON.parse(responseBody);\r",
+                  "if (jsonData && jsonData.token) {\r",
+                  "    pm.collectionVariables.set(\"alice_token\", jsonData.token);\r",
+                  "    console.log(\"Alice's token captured successfully\");\r",
+                  "    pm.test(\"Token captured for Alice\", function() {\r",
+                  "        pm.expect(jsonData.token).to.be.a('string');\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    console.log(\"Failed to capture Alice's token\");\r",
+                  "    pm.test(\"Token capture failed for Alice\", function() {\r",
+                  "        pm.expect(jsonData.token).to.exist;\r",
+                  "    });\r",
+                  "}\r",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"alice@example.com\",\n    \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/minisocial-api/api/users/signin",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["minisocial-api", "api", "users", "signin"]
+            },
+            "description": "Sign in as Alice (automatically captures token for later requests)"
+          }
+        },
+        {
+          "name": "Sign In - Bob",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Capture token from response\r",
+                  "var jsonData = JSON.parse(responseBody);\r",
+                  "if (jsonData && jsonData.token) {\r",
+                  "    pm.collectionVariables.set(\"bob_token\", jsonData.token);\r",
+                  "    console.log(\"Bob's token captured successfully\");\r",
+                  "    pm.test(\"Token captured for Bob\", function() {\r",
+                  "        pm.expect(jsonData.token).to.be.a('string');\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    console.log(\"Failed to capture Bob's token\");\r",
+                  "    pm.test(\"Token capture failed for Bob\", function() {\r",
+                  "        pm.expect(jsonData.token).to.exist;\r",
+                  "    });\r",
+                  "}\r",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"bob@example.com\",\n    \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/minisocial-api/api/users/signin",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["minisocial-api", "api", "users", "signin"]
+            },
+            "description": "Sign in as Bob (automatically captures token for later requests)"
+          }
+        },
+        {
+          "name": "Register User 3 (Charlie)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"charlie@example.com\",\n    \"password\": \"password123\",\n    \"name\": \"Charlie Brown\",\n    \"bio\": \"Third test user\",\n    \"role\": \"member\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/minisocial-api/api/users/signup",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["minisocial-api", "api", "users", "signup"]
+            },
+            "description": "Register the third test user (Charlie)"
+          }
+        },
+        {
+          "name": "Sign In - Charlie",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Capture token from response\r",
+                  "var jsonData = JSON.parse(responseBody);\r",
+                  "if (jsonData && jsonData.token) {\r",
+                  "    pm.collectionVariables.set(\"charlie_token\", jsonData.token);\r",
+                  "    console.log(\"Charlie's token captured successfully\");\r",
+                  "    pm.test(\"Token captured for Charlie\", function() {\r",
+                  "        pm.expect(jsonData.token).to.be.a('string');\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    console.log(\"Failed to capture Charlie's token\");\r",
+                  "    pm.test(\"Token capture failed for Charlie\", function() {\r",
+                  "        pm.expect(jsonData.token).to.exist;\r",
+                  "    });\r",
+                  "}\r",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"charlie@example.com\",\n    \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/minisocial-api/api/users/signin",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["minisocial-api", "api", "users", "signin"]
+            },
+            "description": "Sign in as Charlie (automatically captures token for later requests)"
+          }
+        }
+      ],
+      "description": "User registration and authentication endpoints"
+    },
+    {
+      "name": "2. Friend Request Management",
+      "item": [
+        {
+          "name": "Send Friend Request (Alice to Bob)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Friend request sent successfully\", function () {",
+                  "    pm.expect(pm.response.text()).to.include(\"Friend request sent successfully\");",
+                  "});",
+                  "",
+                  "// Store request ID for use in later tests",
+                  "pm.collectionVariables.set(\"first_request_id\", 1);",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{alice_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"fromUserId\": {{alice_id}},\n    \"toUserId\": {{bob_id}}\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/minisocial-api/api/connections/friend-requests",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["minisocial-api", "api", "connections", "friend-requests"]
+            },
+            "description": "Alice sends a friend request to Bob"
+          }
+        },
+        {
+          "name": "Send Friend Request (Alice to Charlie)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Friend request sent successfully\", function () {",
+                  "    pm.expect(pm.response.text()).to.include(\"Friend request sent successfully\");",
+                  "});",
+                  "",
+                  "// Store request ID for use in later tests",
+                  "pm.collectionVariables.set(\"second_request_id\", 2);",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{alice_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"fromUserId\": {{alice_id}},\n    \"toUserId\": {{charlie_id}}\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/minisocial-api/api/connections/friend-requests",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["minisocial-api", "api", "connections", "friend-requests"]
+            },
+            "description": "Alice sends a friend request to Charlie"
+          }
+        },
+        {
+          "name": "Test Duplicate Friend Request (Should Fail)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 409 Conflict\", function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message indicates duplicate request\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.include(\"already exists\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{alice_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"fromUserId\": {{alice_id}},\n    \"toUserId\": {{bob_id}}\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/minisocial-api/api/connections/friend-requests",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["minisocial-api", "api", "connections", "friend-requests"]
+            },
+            "description": "Try to send a duplicate friend request (should fail)"
+          }
+        },
+        {
+          "name": "View Pending Friend Requests (Bob)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response is an array with Alice's request\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "    pm.expect(jsonData.length).to.be.at.least(1);",
+                  "    ",
+                  "    // Find Alice's request",
+                  "    var aliceRequest = jsonData.find(function(req) {",
+                  "        return req.fromUser.id === parseInt(pm.collectionVariables.get(\"alice_id\"));",
+                  "    });",
+                  "    ",
+                  "    pm.expect(aliceRequest).to.exist;",
+                  "    pm.expect(aliceRequest.status).to.equal(\"pending\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bob_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/minisocial-api/api/connections/user/{{bob_id}}/friend-requests",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["minisocial-api", "api", "connections", "user", "{{bob_id}}", "friend-requests"]
+            },
+            "description": "Bob views his pending friend requests"
+          }
+        },
+        {
+          "name": "View Pending Friend Requests (Charlie)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response is an array with Alice's request\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "    pm.expect(jsonData.length).to.be.at.least(1);",
+                  "    ",
+                  "    // Find Alice's request",
+                  "    var aliceRequest = jsonData.find(function(req) {",
+                  "        return req.fromUser.id === parseInt(pm.collectionVariables.get(\"alice_id\"));",
+                  "    });",
+                  "    ",
+                  "    pm.expect(aliceRequest).to.exist;",
+                  "    pm.expect(aliceRequest.status).to.equal(\"pending\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{charlie_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/minisocial-api/api/connections/user/{{charlie_id}}/friend-requests",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["minisocial-api", "api", "connections", "user", "{{charlie_id}}", "friend-requests"]
+            },
+            "description": "Charlie views his pending friend requests"
+          }
+        },
+        {
+          "name": "Test Unauthorized Access (Alice views Bob's requests)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 403 Forbidden\", function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message indicates unauthorized access\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.include(\"not authorized\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{alice_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/minisocial-api/api/connections/user/{{bob_id}}/friend-requests",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["minisocial-api", "api", "connections", "user", "{{bob_id}}", "friend-requests"]
+            },
+            "description": "Alice tries to view Bob's friend requests (should fail)"
+          }
+        },
+        {
+          "name": "Accept Friend Request (Bob accepts Alice)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Friend request accepted successfully\", function () {",
+                  "    pm.expect(pm.response.text()).to.include(\"Friend request accepted\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bob_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"action\": \"accept\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/minisocial-api/api/connections/friend-requests/{{first_request_id}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["minisocial-api", "api", "connections", "friend-requests", "{{first_request_id}}"]
+            },
+            "description": "Bob accepts Alice's friend request"
+          }
+        },
+        {
+          "name": "Charlie Rejects Friend Request from Alice",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Friend request rejected successfully\", function () {",
+                  "    pm.expect(pm.response.text()).to.include(\"Friend request rejected\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{charlie_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"action\": \"reject\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/minisocial-api/api/connections/friend-requests/{{second_request_id}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["minisocial-api", "api", "connections", "friend-requests", "{{second_request_id}}"]
+            },
+            "description": "Charlie rejects Alice's friend request"
+          }
+        }
+      ],
+      "description": "Endpoints for sending, viewing, and handling friend requests"
+    },
+    {
+      "name": "3. Friendship Management",
+      "item": [
+        {
+          "name": "View Friends List (Alice)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response is an array with Bob (who accepted)\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "    pm.expect(jsonData.length).to.be.at.least(1);",
+                  "",
+                  "    // Find Bob in friends list",
+                  "    var bobFriend = jsonData.find(function(friend) {",
+                  "        return friend.id === parseInt(pm.collectionVariables.get(\"bob_id\"));",
+                  "    });",
+                  "    ",
+                  "    pm.expect(bobFriend).to.exist;",
+                  "    pm.expect(bobFriend.name).to.include(\"Bob\");",
+                  "});",
+                  "",
+                  "pm.test(\"Charlie is not in the friends list (rejected)\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    var charlieFriend = jsonData.find(function(friend) {",
+                  "        return friend.id === parseInt(pm.collectionVariables.get(\"charlie_id\"));",
+                  "    });",
+                  "    ",
+                  "    pm.expect(charlieFriend).to.not.exist;",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{alice_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/minisocial-api/api/connections/user/{{alice_id}}/friends",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["minisocial-api", "api", "connections", "user", "{{alice_id}}", "friends"]
+            },
+            "description": "View Alice's friends list"
+          }
+        },
+        {
+          "name": "View Friends List (Bob)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response is an array with Alice (whose request was accepted)\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "    pm.expect(jsonData.length).to.be.at.least(1);",
+                  "",
+                  "    // Find Alice in friends list",
+                  "    var aliceFriend = jsonData.find(function(friend) {",
+                  "        return friend.id === parseInt(pm.collectionVariables.get(\"alice_id\"));",
+                  "    });",
+                  "    ",
+                  "    pm.expect(aliceFriend).to.exist;",
+                  "    pm.expect(aliceFriend.name).to.include(\"Alice\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bob_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/minisocial-api/api/connections/user/{{bob_id}}/friends",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["minisocial-api", "api", "connections", "user", "{{bob_id}}", "friends"]
+            },
+            "description": "View Bob's friends list"
+          }
+        },
+        {
+          "name": "View Friends List with Name Filter",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{alice_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/minisocial-api/api/connections/user/1/friends?name=Bob",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["minisocial-api", "api", "connections", "user", "1", "friends"],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "Bob"
+                }
+              ]
+            },
+            "description": "View Alice's friends filtered by name"
+          }
+        },
+        {
+          "name": "View Friends List with Email Filter",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{alice_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/minisocial-api/api/connections/user/1/friends?email=bob",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["minisocial-api", "api", "connections", "user", "1", "friends"],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "bob"
+                }
+              ]
+            },
+            "description": "View Alice's friends filtered by email"
+          }
+        }
+      ],
+      "description": "Endpoints for viewing and managing friendships"
+    },
+    {
+      "name": "4. User Profile Management",
+      "item": [
+        {
+          "name": "View User Profile (Alice)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{alice_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/minisocial-api/api/connections/user/1/profile",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["minisocial-api", "api", "connections", "user", "1", "profile"]
+            },
+            "description": "View Alice's user profile"
+          }
+        },
+        {
+          "name": "View User Profile (Bob)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bob_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/minisocial-api/api/connections/user/2/profile",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["minisocial-api", "api", "connections", "user", "2", "profile"]
+            },
+            "description": "View Bob's user profile"
+          }
+        }
+      ],
+      "description": "Endpoints for viewing user profiles"
+    }
+  ],
+  "variable": [
+    {
+      "key": "alice_token",
+      "value": ""
+    },
+    {
+      "key": "bob_token",
+      "value": ""
+    },
+    {
+      "key": "charlie_token",
+      "value": ""
+    },
+    {
+      "key": "alice_id",
+      "value": "1"
+    },
+    {
+      "key": "bob_id",
+      "value": "2"
+    },
+    {
+      "key": "charlie_id",
+      "value": "3"
+    },
+    {
+      "key": "first_request_id",
+      "value": "1"
+    },
+    {
+      "key": "second_request_id",
+      "value": "2"
+    },
+    {
+      "key": "third_request_id",
+      "value": "3"
+    },
+    {
+      "key": "initialized",
+      "value": "false"
+    }
+  ]
+}
