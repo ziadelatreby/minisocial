@@ -1,12 +1,15 @@
 package com.minisocial.minisocialapi.common;
 
+import com.minisocial.minisocialapi.enums.USER_ROLE;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Locale;
 
 
 public class JwtUtil {
@@ -28,4 +31,5 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
 }
