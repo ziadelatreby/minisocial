@@ -50,4 +50,23 @@ public class GroupResource {
         return Response.status(Response.Status.CREATED).entity(res).build();
     }
 
+    @PUT
+    @Path("/{groupId}/requests/{userId}/accept")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response acceptJoinRequest(@PathParam("groupId") Long groupId, @PathParam("userId") Long targetUserId, @Context HttpServletRequest ctx) {
+        Long ctxUserId = (Long) ctx.getAttribute(ctxUserIdAttributeName);
+        groupService.acceptJoinRequest(groupId, targetUserId, ctxUserId);
+        return Response.ok().build();
+    }
+
+    @PUT
+    @Path("/{groupId}/requests/{userId}/reject")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response rejectJoinRequest(@PathParam("groupId") Long groupId, @PathParam("userId") Long targetUserId, @Context HttpServletRequest ctx) {
+        Long ctxUserId = (Long) ctx.getAttribute(ctxUserIdAttributeName);
+        groupService.rejectJoinRequest(groupId, targetUserId, ctxUserId);
+        return Response.ok().build();
+    }
+
+
 }
