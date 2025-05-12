@@ -79,4 +79,15 @@ public class Comment implements Serializable {
     public void setUser(User user) {
         this.user = user;
     }
+    public Comment(Long id, String content, LocalDateTime createdAt, User user, Post post) {
+        this.id = id;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.user = user;
+        this.post = post;
+    }
+
+
+
+
 }

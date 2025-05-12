@@ -96,4 +96,16 @@ public class FriendRequest implements Serializable {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+
+
+    // public LocalDateTime getDate() {
+    //     return this.date;
+    // }
+
+    // public void setDate(LocalDateTime date) {
+    //     this.date = date;
+    // }
+
+
 }

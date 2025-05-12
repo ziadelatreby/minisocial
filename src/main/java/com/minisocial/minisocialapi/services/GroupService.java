@@ -3,6 +3,7 @@ package com.minisocial.minisocialapi.services;
 import com.minisocial.minisocialapi.entities.Group;
 import com.minisocial.minisocialapi.entities.User;
 import com.minisocial.minisocialapi.entities.UserGroup;
+import com.minisocial.minisocialapi.entities.notification.*;
 import com.minisocial.minisocialapi.enums.GROUP_TYPE;
 import com.minisocial.minisocialapi.enums.USER_GROUP_ROLE;
 import com.minisocial.minisocialapi.errors.BadRequestException;
@@ -10,6 +11,9 @@ import com.minisocial.minisocialapi.errors.NotAuthorizedException;
 import com.minisocial.minisocialapi.errors.NotFoundException;
 import com.minisocial.minisocialapi.repositories.GroupRepository;
 import com.minisocial.minisocialapi.repositories.UserRepository;
+import com.minisocial.minisocialapi.services.notification_service_utiles.NotificationFactory;
+
+
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -23,6 +27,9 @@ public class GroupService {
 
     @Inject
     UserRepository userRepository;
+
+    @Inject
+    NotificationService notificationService;
 
     public GroupService() {
     }
@@ -125,6 +132,14 @@ public class GroupService {
         userGroup.setUser(targetUser);
         userGroup.setRole(USER_GROUP_ROLE.MEMBER);
         groupRepository.saveUserGroup(userGroup);
+
+        // Notify the user about the acceptance
+        Notification adminNotification= NotificationFactory.createGroupJoinNotification( adminUser, targetUser, group);
+        Notification userNotification= NotificationFactory.createGroupJoinNotification(  targetUser,targetUser, group);
+
+        notificationService.sendNotification(adminNotification);
+        notificationService.sendNotification(userNotification);
+
     }
 
     public void rejectJoinRequest(Long groupId, Long targetUserId, Long ctxUserId) {
@@ -146,6 +161,11 @@ public class GroupService {
         // remove the request
         targetUser.getRequestedGroups().remove(group);
         group.getJoinRequesters().remove(targetUser);
+
+        // Notify the user about the acceptance
+
+
+
     }
 
 }

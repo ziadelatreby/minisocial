@@ -3,6 +3,7 @@ package com.minisocial.minisocialapi.repositories;
 import com.minisocial.minisocialapi.entities.Group;
 import com.minisocial.minisocialapi.entities.UserGroup;
 import com.minisocial.minisocialapi.enums.USER_GROUP_ROLE;
+
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -18,6 +19,9 @@ public class GroupRepository {
 
     public void saveUserGroup(UserGroup userGroup) {
         em.persist(userGroup);
+    }
+    public Group findById(Long id) {
+        return em.find(Group.class, id);
     }
 
     public Group findByName(String name) {
@@ -47,9 +51,6 @@ public class GroupRepository {
         return count > 0;
     }
 
-    public Group findById(Long id) {
-        return em.find(Group.class, id);
-    }
 
 
 }

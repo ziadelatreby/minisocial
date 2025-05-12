@@ -49,7 +49,7 @@ public class Group implements Serializable {
 
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
@@ -57,16 +57,15 @@ public class Group implements Serializable {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     public void setDescription(String description) {
@@ -74,7 +73,7 @@ public class Group implements Serializable {
     }
 
     public GROUP_TYPE getType() {
-        return type;
+        return this.type;
     }
 
     public void setType(GROUP_TYPE type) {
@@ -82,15 +81,23 @@ public class Group implements Serializable {
     }
 
     public Set<UserGroup> getUserGroups() {
-        return userGroups;
+        return this.userGroups;
     }
 
     public void setUserGroups(Set<UserGroup> userGroups) {
         this.userGroups = userGroups;
     }
 
+    public Set<Post> getPosts() {
+        return this.posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
+    }
+
     public Set<User> getJoinRequesters() {
-        return joinRequesters;
+        return this.joinRequesters;
     }
 
     public void setJoinRequesters(Set<User> joinRequesters) {
@@ -98,11 +105,4 @@ public class Group implements Serializable {
     }
 
 
-    public Set<Post> getPosts() {
-        return posts;
-    }
-
-    public void setPosts(Set<Post> posts) {
-        this.posts = posts;
-    }
 }

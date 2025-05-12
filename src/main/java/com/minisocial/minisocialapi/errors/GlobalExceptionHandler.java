@@ -1,5 +1,6 @@
 package com.minisocial.minisocialapi.errors;
 
+import jakarta.ws.rs.ClientErrorException;
 import jakarta.ejb.EJBException;
 import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.WebApplicationException;
