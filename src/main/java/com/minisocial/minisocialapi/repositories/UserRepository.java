@@ -21,6 +21,10 @@ public class UserRepository {
         em.merge(user);
     }
 
+    // public User findById(Long id) {
+    //   return em.find(User.class, id);
+    // }
+
     public User findById(Long id) {
         try {
             return em.createQuery("SELECT u FROM User u LEFT JOIN FETCH u.friends WHERE u.id = :id", User.class)

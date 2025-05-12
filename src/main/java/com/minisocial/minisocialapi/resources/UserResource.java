@@ -19,6 +19,8 @@ public class UserResource {
     @Inject
     private UserService userService;
 
+    private final String ctxUserIdAttributeName = "ctxUserId";
+
     @POST
     @Path("/signup")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -43,15 +45,15 @@ public class UserResource {
         return Response.status(Response.Status.OK).entity(res).type(MediaType.APPLICATION_JSON).build();
     }
 
-    @POST
-    @Path("/is-authenticated-demo")
+    @PUT
+    @Path("/{userId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response isAuth(User user, @Context HttpServletRequest ctx) {
-        String userId = ctx.getAttribute("ctxUserId").toString(); // extract the jwt userId, now we have the id of the authenticted user
-        HashMap<String, Object> res = new HashMap<>();
-        res.put("user", user);
-        res.put("userId", userId);
-        return Response.status(Response.Status.OK).entity(res).type(MediaType.APPLICATION_JSON).build();
+    public Response updateProfile(@PathParam("userId") Long userId, UserDTO updateParams, @Context HttpServletRequest ctx) {
+        Long ctxUserId = (Long) ctx.getAttribute(ctxUserIdAttributeName);
+
+        UserDTO userDTO =  userService.updateProfile(ctxUserId, userId, updateParams);
+
+        return Response.status(Response.Status.OK).entity(userDTO).type(MediaType.APPLICATION_JSON).build();
     }
 }
