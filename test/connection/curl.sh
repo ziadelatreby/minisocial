@@ -204,6 +204,69 @@ echo "Success criteria: Check that all test sections returned expected results"
 echo "Tests for search/filter functionality are in section [8]"
 echo "All error handling tests are in sections [4], [5.3], and [10]"
 
+# Add tests for Post, Like, and Comment functionality
+echo -e "\n=> [11] Testing Post, Like, and Comment functionality..."
+
+# Create a post from Alice
+echo -e "\n[11.1] Alice creates a post..."
+ALICE_POST_RESULT=$(curl -s -X POST "$API_URL/posts" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ALICE_TOKEN" \
+  -d '{"content":"This is Alices first post!","imageUrl":"https://example.com/image.jpg"}' \
+)
+echo "Alices post created: $ALICE_POST_RESULT"
+ALICE_POST_ID=$(echo $ALICE_POST_RESULT | grep -o '"id":[0-9]*' | head -1 | sed 's/"id"://')
+
+# Create a post from Bob
+echo -e "\n[11.2] Bob creates a post..."
+BOB_POST_RESULT=$(curl -s -X POST "$API_URL/posts" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $BOB_TOKEN" \
+  -d '{"content":"Bobs awesome post!"}' \
+)
+echo "Bobs post created: $BOB_POST_RESULT"
+BOB_POST_ID=$(echo $BOB_POST_RESULT | grep -o '"id":[0-9]*' | head -1 | sed 's/"id"://')
+
+# Like posts
+echo -e "\n[11.3] Bob likes Alices post..."
+LIKE_RESULT=$(curl -s -X PATCH "$API_URL/posts/$ALICE_POST_ID/likes" \
+  -H "Authorization: Bearer $BOB_TOKEN" \
+)
+echo "Like result: $LIKE_RESULT"
+
+# Check post with likes
+echo -e "\n[11.4] View Alices post with like count..."
+POST_VIEW_RESULT=$(curl -s -X GET "$API_URL/posts/$ALICE_POST_ID" \
+  -H "Authorization: Bearer $ALICE_TOKEN" \
+)
+echo "Post view result: $POST_VIEW_RESULT"
+
+# Comment on posts
+echo -e "\n[11.5] Charlie comments on Alices post..."
+COMMENT_RESULT=$(curl -s -X POST "$API_URL/posts/$ALICE_POST_ID/comments" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $CHARLIE_TOKEN" \
+  -d '{"content":"Great post, Alice!"}' \
+)
+echo "Comment result: $COMMENT_RESULT"
+COMMENT_ID=$(echo $COMMENT_RESULT | grep -o '"id":[0-9]*' | head -1 | sed 's/"id"://')
+
+# View comments
+echo -e "\n[11.6] View comments on Alices post..."
+COMMENTS_RESULT=$(curl -s -X GET "$API_URL/posts/$ALICE_POST_ID/comments" \
+  -H "Authorization: Bearer $ALICE_TOKEN" \
+)
+echo "Comments view result: $COMMENTS_RESULT"
+
+# Get user feed
+echo -e "\n[11.7] Alice views her feed..."
+FEED_RESULT=$(curl -s -X GET "$API_URL/posts/feed/1" \
+  -H "Authorization: Bearer $ALICE_TOKEN" \
+)
+echo "Feed result: $FEED_RESULT"
+
+echo -e "\n========== Post, Like, and Comment Tests Complete ==========="
+
 # TODO: 
 #   - add search (view) by name
 #   - add search (view) by email
