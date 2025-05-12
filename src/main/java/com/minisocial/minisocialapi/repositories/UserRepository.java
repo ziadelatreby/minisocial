@@ -4,6 +4,7 @@ import com.minisocial.minisocialapi.entities.User;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 
@@ -12,16 +13,12 @@ public class UserRepository {
     @PersistenceContext
     private EntityManager em;
 
-    public User findByEmail(String email) {
-        return em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
-                .setParameter("email", email)
-                .getResultStream()
-                .findFirst()
-                .orElse(null);
-    }
-
     public void save(User user) {
         em.persist(user);
+    }
+    
+    public void update(User user) {
+        em.merge(user);
     }
 
     public User findById(Long id) {
@@ -34,8 +31,12 @@ public class UserRepository {
         }
     }
     
-    public void update(User user) {
-        em.merge(user);
+    public User findByEmail(String email) {
+        return em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+                .setParameter("email", email)
+                .getResultStream()
+                .findFirst()
+                .orElse(null);
     }
     
     public boolean areFriends(User user1, User user2) {
@@ -48,35 +49,26 @@ public class UserRepository {
         return count > 0;
     }
     
-    @jakarta.transaction.Transactional
+    @Transactional
     public void addFriendship(Long userId1, Long userId2) {
-        // Direct approach using a native query to add bidirectional friendship
-        // Using the correct table name from the entity mapping
-        String tableName = "user_friends"; // From @JoinTable annotation in User.java
+        String tableName = "user_friends";
         
         try {
-            // Add first direction of friendship
             em.createNativeQuery("INSERT INTO " + tableName + " (user_id, friend_id) VALUES (?1, ?2)")
                .setParameter(1, userId1)
                .setParameter(2, userId2)
                .executeUpdate();
             
-            // Add reverse direction of friendship
             em.createNativeQuery("INSERT INTO " + tableName + " (user_id, friend_id) VALUES (?1, ?2)")
                .setParameter(1, userId2)
                .setParameter(2, userId1)
                .executeUpdate();
         } catch (Exception e) {
-            // Log and handle potential errors like duplicate entries
             System.out.println("Error adding friendship: " + e.getMessage());
         }
     }
     
-    /**
-     * Get a count of friends for a specific user
-     */
     public int countFriends(Long userId) {
-        // Direct count using native query to avoid loading entire collection
         Number count = (Number) em.createNativeQuery(
             "SELECT COUNT(*) FROM user_friends WHERE user_id = ?1")
             .setParameter(1, userId)
@@ -84,14 +76,9 @@ public class UserRepository {
         return count.intValue();
     }
     
-    /**
-     * Find friends of a user with optional filtering
-     */
     public List<User> findFriends(User user, String nameFilter, String emailFilter) {
-        // Use a direct native query to avoid issues with JPA entity mapping
         String sql = "SELECT u.* FROM users u JOIN user_friends uf ON u.id = uf.friend_id WHERE uf.user_id = ?1";
         
-        // Apply filters if provided
         if (nameFilter != null && !nameFilter.isEmpty()) {
             sql += " AND LOWER(u.name) LIKE LOWER(?2)";
         }
@@ -99,11 +86,9 @@ public class UserRepository {
             sql += " AND LOWER(u.email) LIKE LOWER(?" + (nameFilter != null && !nameFilter.isEmpty() ? "3" : "2") + ")";
         }
         
-        // Create the query
         jakarta.persistence.Query query = em.createNativeQuery(sql, User.class);
         query.setParameter(1, user.getId());
         
-        // Set filter parameters if needed
         int paramIndex = 2;
         if (nameFilter != null && !nameFilter.isEmpty()) {
             query.setParameter(paramIndex++, "%" + nameFilter + "%");

@@ -3,6 +3,7 @@ package com.minisocial.minisocialapi.dtos;
 import com.minisocial.minisocialapi.entities.User;
 
 import java.io.Serializable;
+// refactor to extend UserDTO
 
 public class UserProfileDTO implements Serializable {
     private Long id;
@@ -21,11 +22,9 @@ public class UserProfileDTO implements Serializable {
         this.email = user.getEmail();
         this.bio = user.getBio();
         this.role = user.getRole();
-        // Don't try to access the lazy-loaded friends collection
-        this.friendsCount = 0; // We'll set this separately if needed
+        this.friendsCount = 0;
     }
     
-    // Constructor that allows explicitly setting the friends count
     public UserProfileDTO(User user, int friendsCount) {
         this(user);
         this.friendsCount = friendsCount;

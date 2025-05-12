@@ -1,12 +1,12 @@
 package com.minisocial.minisocialapi.resources;
 
-import com.minisocial.minisocialapi.dtos.UserDTO;
+// import com.minisocial.minisocialapi.dtos.UserDTO;
 import com.minisocial.minisocialapi.entities.User;
 import com.minisocial.minisocialapi.services.UserService;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.container.ContainerRequestContext;
+// import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;

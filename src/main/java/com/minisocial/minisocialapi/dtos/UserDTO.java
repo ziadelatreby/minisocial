@@ -1,4 +1,7 @@
 package com.minisocial.minisocialapi.dtos;
+
+// import com.minisocial.minisocialapi.entities.User;
+
 public class UserDTO {
     private Long id;
     private String name;
@@ -11,6 +14,9 @@ public class UserDTO {
         this.email = email;
         this.role = role;
     }
+
+    // public UserDTO(User user) {
+    // }
 
     public Long getId() {
         return id;

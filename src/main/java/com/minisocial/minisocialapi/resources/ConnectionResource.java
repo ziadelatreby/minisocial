@@ -51,7 +51,6 @@ public class ConnectionResource {
             FriendRequestActionDTO actionDTO,
             @Context HttpServletRequest request) {
         
-        // Get authenticated user ID from request context
         String userIdStr = request.getAttribute("ctxUserId").toString();
         Long userId = Long.parseLong(userIdStr);
         
@@ -74,12 +73,10 @@ public class ConnectionResource {
             @QueryParam("email") String emailFilter,
             @Context HttpServletRequest request) {
         
-        // We don't need to check authentication for viewing friends list,
-        // as it's public information in this implementation
+        // TODO: check authentication for viewing friends list or should it be public? (anyone can view friends list of any user?)
         
         List<User> friends = friendRequestService.getUserFriends(userId, nameFilter, emailFilter);
         
-        // Convert to DTOs to avoid lazy loading issues, with explicit friend count
         List<UserProfileDTO> profileDTOs = friends.stream()
                 .map(friend -> new UserProfileDTO(friend, userRepository.countFriends(friend.getId())))
                 .collect(Collectors.toList());
@@ -96,11 +93,9 @@ public class ConnectionResource {
             @PathParam("user-id") Long userId,
             @Context HttpServletRequest request) {
         
-        // Get authenticated user ID from request context
         String userIdStr = request.getAttribute("ctxUserId").toString();
         Long authenticatedUserId = Long.parseLong(userIdStr);
         
-        // Check if the user is requesting their own friend requests
         if (!userId.equals(authenticatedUserId)) {
             return Response.status(Response.Status.FORBIDDEN)
                     .entity("You can only view your own friend requests")
@@ -109,7 +104,6 @@ public class ConnectionResource {
         
         List<FriendRequest> pendingRequests = friendRequestService.getPendingFriendRequests(userId);
         
-        // Convert to DTOs to avoid circular references and provide better formatting
         List<FriendRequestResponseDTO> responseList = pendingRequests.stream()
                 .map(FriendRequestResponseDTO::new)
                 .collect(Collectors.toList());
@@ -119,6 +113,7 @@ public class ConnectionResource {
                 .build();
     }
 
+    // get user profile by id (just for testing, remove later)
     @GET
     @Path("/user/{user-id}/profile")
     @Produces(MediaType.APPLICATION_JSON)
@@ -126,9 +121,6 @@ public class ConnectionResource {
             @PathParam("user-id") Long userId,
             @Context HttpServletRequest request) {
         
-        // No authentication check needed for viewing public profiles
-        
-        // Fetch the user from repository
         User user = userRepository.findById(userId);
         if (user == null) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -143,4 +135,6 @@ public class ConnectionResource {
                 .entity(profileDTO)
                 .build();
     }
+
+    // TODO: search user profiles by name and/or email 
 }
