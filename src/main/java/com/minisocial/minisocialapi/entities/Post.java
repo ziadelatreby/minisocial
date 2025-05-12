@@ -1,4 +1,4 @@
-package com.minisocial.minisocialapi.entity;
+package com.minisocial.minisocialapi.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
