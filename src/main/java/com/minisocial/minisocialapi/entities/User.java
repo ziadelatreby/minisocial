@@ -173,4 +173,12 @@ public class User implements Serializable {
     public void setGroups(Set<UserGroup> groups) {
         this.userGroups = groups;
     }
+
+    public Set<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(Set<Notification> notifications) {
+        this.notifications = notifications;
+    }
 }

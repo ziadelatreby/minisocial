@@ -7,10 +7,11 @@ import com.minisocial.minisocialapi.service.notification_service_utiles.MessageS
 import com.minisocial.minisocialapi.service.notification_service_utiles.NotificationSender;
 
 import jakarta.inject.Inject;
+import jakarta.ejb.Stateless;
 
+@Stateless
 public class NotificationService {
 
-    @Inject 
     MessageStringCreator messageStringCreator;
 
     @Inject
