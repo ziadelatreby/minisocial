@@ -1,5 +1,6 @@
 package com.minisocial.minisocialapi.entities;
 
+import com.minisocial.minisocialapi.enums.GROUP_TYPE;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -10,23 +11,98 @@ import java.util.Set;
 public class Group implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
 
     @Column(nullable = false)
     private String name;
 
+
     @Column(nullable = false)
     private String description;
+
+
+
+    @Column(nullable = false)
+    private GROUP_TYPE type;
+
 
 
     @OneToMany(mappedBy = "group")
     private Set<UserGroup> userGroups;
 
 
+
     @OneToMany(mappedBy = "group")
     private Set<Post> posts;
+
 
     // need a manual logic to prevent duplication
     @ManyToMany(mappedBy = "requestedGroups")
     private Set<User> joinRequesters;
+
+
+
+    public Group() {
+    }
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public GROUP_TYPE getType() {
+        return type;
+    }
+
+    public void setType(GROUP_TYPE type) {
+        this.type = type;
+    }
+
+    public Set<UserGroup> getUserGroups() {
+        return userGroups;
+    }
+
+    public void setUserGroups(Set<UserGroup> userGroups) {
+        this.userGroups = userGroups;
+    }
+
+    public Set<User> getJoinRequesters() {
+        return joinRequesters;
+    }
+
+    public void setJoinRequesters(Set<User> joinRequesters) {
+        this.joinRequesters = joinRequesters;
+    }
+
+
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
+    }
 }

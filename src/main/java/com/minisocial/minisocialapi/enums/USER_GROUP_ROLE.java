@@ -1,6 +1,6 @@
 package com.minisocial.minisocialapi.enums;
 
-public enum UserGroupRoleEnum {
+public enum USER_GROUP_ROLE {
     ADMIN,
     MEMBER
 }

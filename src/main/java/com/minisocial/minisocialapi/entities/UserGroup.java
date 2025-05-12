@@ -1,6 +1,6 @@
 package com.minisocial.minisocialapi.entities;
 
-import com.minisocial.minisocialapi.enums.UserGroupRoleEnum;
+import com.minisocial.minisocialapi.enums.USER_GROUP_ROLE;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -24,7 +24,7 @@ public class UserGroup implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserGroupRoleEnum role;
+    private USER_GROUP_ROLE role;
 
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
@@ -32,5 +32,45 @@ public class UserGroup implements Serializable {
 
     public UserGroup() {
         this.createdAt = LocalDateTime.now();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    public USER_GROUP_ROLE getRole() {
+        return role;
+    }
+
+    public void setRole(USER_GROUP_ROLE role) {
+        this.role = role;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }
