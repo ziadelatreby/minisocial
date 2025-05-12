@@ -1,8 +1,12 @@
 package com.minisocial.minisocialapi.common;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -23,9 +27,21 @@ public class JwtUtil {
     }
 
     public static Claims decodeToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(secret.getBytes(StandardCharsets.UTF_8))
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+    
+    public static String validateToken(String token) throws ExpiredJwtException, UnsupportedJwtException, 
+            MalformedJwtException, SignatureException, IllegalArgumentException {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        
+        return claims.getSubject(); // Returns the user ID stored in the token
     }
 }
