@@ -65,8 +65,8 @@ This module implements user connection management functionality for the MiniSoci
 
 ## Testing
 
-- A Postman collection is provided: `minisocial_connection_module.postman_collection.json`
-- A bash test script is available: `test_connections.sh`
+- A Postman collection is provided: `[postman.json](../../test/connection/postman.json)`
+- A bash test script is available: `[curl.sh](../../test/connection/curl.sh)`
 
 ## Implementation Notes
 
