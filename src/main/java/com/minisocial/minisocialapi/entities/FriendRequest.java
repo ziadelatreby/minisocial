@@ -66,4 +66,5 @@ public class FriendRequest implements Serializable {
         this.date = date;
     }
 
+
 }

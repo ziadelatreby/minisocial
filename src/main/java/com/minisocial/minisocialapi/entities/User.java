@@ -10,6 +10,10 @@ import java.util.Set;
 
 import com.minisocial.minisocialapi.entities.notification.Notification;
 
+
+import java.io.Serializable;
+import java.util.Set;
+
 @Entity
 @Table(name = "users")
 @NamedQueries({
@@ -62,6 +66,11 @@ public class User implements Serializable {
     private Set<UserGroup> userGroups;
 
     //groups that the user has requested to join
+
+    @OneToMany(mappedBy = "user")
+    private Set<UserGroup> userGroups;
+
+
     @ManyToMany
     @JoinTable(name = "group_join_requests", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
     private Set<Group> requestedGroups;
@@ -72,7 +81,7 @@ public class User implements Serializable {
     
     //change by @Abdelrahman map relationship with Notification
     @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL)
-    private Set<Notification> notifications = new HashSet<>();
+    private Set<Notification> notifications ;
 
     public User() {
     }
@@ -181,4 +190,5 @@ public class User implements Serializable {
     public void setNotifications(Set<Notification> notifications) {
         this.notifications = notifications;
     }
+
 }

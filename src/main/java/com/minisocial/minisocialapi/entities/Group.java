@@ -79,4 +79,5 @@ public class Group implements Serializable {
         this.joinRequesters = joinRequesters;
     }
 
+
 }
