@@ -10,6 +10,9 @@ import com.minisocial.minisocialapi.errors.ForbiddenException;
 import com.minisocial.minisocialapi.errors.NotFoundException;
 import com.minisocial.minisocialapi.repositories.FriendRequestRepository;
 import com.minisocial.minisocialapi.repositories.UserRepository;
+import com.minisocial.minisocialapi.services.notification_service_utiles.NotificationFactory;
+import com.minisocial.minisocialapi.entities.notification.Notification;
+
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -25,6 +28,9 @@ public class FriendRequestService {
 
     @Inject
     private UserRepository userRepository;
+
+    @Inject
+    private NotificationService notificationService;
 
     @Transactional
     public void sendFriendRequest(FriendRequestDTO friendRequestDTO, Long authenticatedUserId) {
@@ -62,6 +68,11 @@ public class FriendRequestService {
 
         FriendRequest friendRequest = new FriendRequest(fromUser, toUser);
         friendRequestRepository.save(friendRequest);
+
+        //send notification to the user
+        Notification notification =NotificationFactory.createFriendRequestNotification(fromUser, toUser, friendRequest);
+        notificationService.sendNotification(notification);
+
     }
 
     @Transactional

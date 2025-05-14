@@ -1,8 +1,10 @@
 package com.minisocial.minisocialapi.services;
 
+import com.minisocial.minisocialapi.dtos.UserDTO;
 import com.minisocial.minisocialapi.entities.Group;
 import com.minisocial.minisocialapi.entities.User;
 import com.minisocial.minisocialapi.entities.UserGroup;
+import com.minisocial.minisocialapi.entities.notification.*;
 import com.minisocial.minisocialapi.enums.GROUP_TYPE;
 import com.minisocial.minisocialapi.enums.USER_GROUP_ROLE;
 import com.minisocial.minisocialapi.errors.BadRequestException;
@@ -10,12 +12,15 @@ import com.minisocial.minisocialapi.errors.NotAuthorizedException;
 import com.minisocial.minisocialapi.errors.NotFoundException;
 import com.minisocial.minisocialapi.repositories.GroupRepository;
 import com.minisocial.minisocialapi.repositories.UserRepository;
+import com.minisocial.minisocialapi.services.notification_service_utiles.NotificationFactory;
+
+
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @Stateless
 @Transactional
@@ -27,10 +32,15 @@ public class GroupService {
     @Inject
     UserRepository userRepository;
 
+    @Inject
+    NotificationService notificationService;
+
     public GroupService() {
     }
 
 
+    //@abdelrahman recommendation to make it transactional
+    @Transactional
     public void createGroup(Group groupParams, Long ctxUserId) {
         // Get the authenticated user ID from context
         User user = userRepository.findById(ctxUserId);
@@ -50,6 +60,7 @@ public class GroupService {
         group.setType(groupParams.getType());
 
         groupRepository.save(group);
+        groupRepository.flushing();
 
         // set the group creator's role as admin
         UserGroup userGroup = new UserGroup();
@@ -128,6 +139,14 @@ public class GroupService {
         userGroup.setUser(targetUser);
         userGroup.setRole(USER_GROUP_ROLE.MEMBER);
         groupRepository.saveUserGroup(userGroup);
+
+        // Notify the user about the acceptance
+        Notification adminNotification= NotificationFactory.createGroupJoinNotification( adminUser, targetUser, group);
+        Notification userNotification= NotificationFactory.createGroupJoinNotification(  targetUser,targetUser, group);
+
+        notificationService.sendNotification(adminNotification);
+        notificationService.sendNotification(userNotification);
+
     }
 
     public void rejectJoinRequest(Long groupId, Long targetUserId, Long ctxUserId) {
@@ -149,8 +168,11 @@ public class GroupService {
         // remove the request
         targetUser.getRequestedGroups().remove(group);
         group.getJoinRequesters().remove(targetUser);
+
     }
 
+        //@abdelrahman recommendation to make it transactional
+        @Transactional
         public void kickMember(Long groupId, Long targetUserId, Long ctxUserId) {
 
             if(targetUserId.equals(ctxUserId) ) {
@@ -173,6 +195,13 @@ public class GroupService {
 
             // deleteUserGroup
             groupRepository.deleteUserGroup(userGroup); // save
+
+
+            Group group = userGroup.getGroup();
+            // Notify the user about the acceptance
+            Notification userNotification= NotificationFactory.createGroupLeaveNotification(  targetUser,targetUser, group, true);
+
+            notificationService.sendNotification(userNotification);
         }
 
     public void promoteMemberToAdmin(Long groupId, Long targetUserId, Long ctxUserId) {
@@ -195,11 +224,17 @@ public class GroupService {
     }
 
 
-    public List<User> getGroupJoinRequests(Long groupId, Long ctxUserId) {
+    public List<UserDTO> getGroupJoinRequests(Long groupId, Long ctxUserId) {
+
         if (!groupRepository.isUserAdminInGroup(ctxUserId, groupId)) {
             throw new NotAuthorizedException("Only admins can view join requests");
         }
 
-        return groupRepository.getJoinRequestsForGroup(groupId);
+        List<User> joinRequests = groupRepository.getJoinRequestsForGroup(groupId);
+
+        return joinRequests.stream().map(User::toDTO).collect(Collectors.toList());
     }
+
+
+
 }

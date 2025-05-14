@@ -1,4 +1,4 @@
-package com.minisocial.minisocialapi;
+package com.minisocial.minisocialapi.resources;
 
 
 import jakarta.ws.rs.GET;

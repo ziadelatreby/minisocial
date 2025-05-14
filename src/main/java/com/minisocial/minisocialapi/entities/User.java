@@ -5,6 +5,14 @@ import com.minisocial.minisocialapi.enums.USER_ROLE;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.HashSet;
+
+import java.io.Serializable;
+import java.util.Set;
+
+import com.minisocial.minisocialapi.entities.notification.Notification;
+
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Locale;
@@ -58,6 +66,7 @@ public class User implements Serializable {
     )
     private Set<User> friends;
 
+    //groups that the user is offically member of
     @OneToMany(mappedBy = "user")
     private Set<UserGroup> userGroups;
 
@@ -66,6 +75,13 @@ public class User implements Serializable {
     @JoinTable(name = "group_join_requests", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
     private Set<Group> requestedGroups;
 
+    
+    // @ManyToMany(mappedBy = "members")
+    // private Set<Group> groups;
+    
+    //change by @Abdelrahman map relationship with Notification
+    @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL)
+    private Set<Notification> notifications ;
 
     public User() {
     }
@@ -165,6 +181,14 @@ public class User implements Serializable {
 
     public void setGroups(Set<UserGroup> groups) {
         this.userGroups = groups;
+    }
+
+    public Set<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(Set<Notification> notifications) {
+        this.notifications = notifications;
     }
 
     // helprs

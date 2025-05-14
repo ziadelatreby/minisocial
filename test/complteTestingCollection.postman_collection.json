@@ -1,0 +1,531 @@
+{
+  "info": {
+    "name": "MiniSocial API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Initial Setup",
+      "item": [
+        {
+          "name": "Create User 1 (Main User)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/users/signup",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"user1@test.com\", \"password\": \"password123\", \"name\": \"User One\", \"bio\": \"Test user 1\", \"role\": \"member\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.globals.set('user1Id', pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create User 2 (Interacting User)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/users/signup",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"user2@test.com\", \"password\": \"password123\", \"name\": \"User Two\", \"bio\": \"Test user 2\", \"role\": \"member\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.globals.set('user2Id', pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. Authentication",
+      "item": [
+        {
+          "name": "Login User 1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/users/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"user1@test.com\", \"password\": \"password123\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.globals.set('user1Token', pm.response.json().token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login User 2",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/users/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"user2@test.com\", \"password\": \"password123\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.globals.set('user2Token', pm.response.json().token);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3. Friend Request Notifications",
+      "item": [
+        {
+          "name": "Send Friend Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user2Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/connections/friend-requests/{{user1Id}}"
+          }
+        },
+        {
+          "name": "Check Friend Request Notification",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user1Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/notifications"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Has friend request notification\", function () {",
+                  "    const notifications = pm.response.json();",
+                  "    const hasFriendRequest = notifications.some(n => n.eventType === 'FRIEND_REQUEST');",
+                  "    pm.expect(hasFriendRequest).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4. Group Notifications",
+      "item": [
+        {
+          "name": "Create Closed Group",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user1Token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/groups",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Test Closed Group\", \"description\": \"Test group for notifications\", \"type\": \"CLOSED\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.globals.set('groupId', pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Request to Join Group",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user2Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/groups/{{groupId}}/join-requests"
+          }
+        },
+        {
+          "name": "Check Group Join Request Notification",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user1Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/notifications"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Has group join request notification\", function () {",
+                  "    const notifications = pm.response.json();",
+                  "    const hasGroupJoinRequest = notifications.some(n => n.eventType === 'GROUP_JOIN_REQUEST');",
+                  "    pm.expect(hasGroupJoinRequest).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "5. Post and Interaction Notifications",
+      "item": [
+        {
+          "name": "Create Post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user1Token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/posts",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"content\": \"Test post for notifications\", \"visibility\": \"PUBLIC\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.globals.set('postId', pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Like Post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user2Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/posts/{{postId}}/likes"
+          }
+        },
+        {
+          "name": "Comment on Post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user2Token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/posts/{{postId}}/comments",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"content\": \"Test comment for notification\"}"
+            }
+          }
+        },
+        {
+          "name": "Check Post Interaction Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user1Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/notifications"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Has like notification\", function () {",
+                  "    const notifications = pm.response.json();",
+                  "    const hasLikeNotification = notifications.some(n => n.eventType === 'LIKE');",
+                  "    pm.expect(hasLikeNotification).to.be.true;",
+                  "});",
+                  "",
+                  "pm.test(\"Has comment notification\", function () {",
+                  "    const notifications = pm.response.json();",
+                  "    const hasCommentNotification = notifications.some(n => n.eventType === 'COMMENT');",
+                  "    pm.expect(hasCommentNotification).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "6. Group Leave Notification",
+      "item": [
+        {
+          "name": "Accept Join Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user1Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/groups/{{groupId}}/join-requests/{{user2Id}}/accept"
+          }
+        },
+        {
+          "name": "Leave Group",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user2Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/groups/{{groupId}}/leave"
+          }
+        },
+        {
+          "name": "Check Group Leave Notification",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user1Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/notifications"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Has group leave notification\", function () {",
+                  "    const notifications = pm.response.json();",
+                  "    const hasLeaveNotification = notifications.some(n => n.eventType === 'GROUP_LEAVE');",
+                  "    pm.expect(hasLeaveNotification).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "7. Notification Management",
+      "item": [
+        {
+          "name": "Get Unread Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user1Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/notifications/unread"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Has unread notifications\", function () {",
+                  "    const notifications = pm.response.json();",
+                  "    pm.expect(notifications.length).to.be.greaterThan(0);",
+                  "    notifications.forEach(n => {",
+                  "        pm.expect(n.isRead).to.be.false;",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Verify Read Status After View",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user1Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/notifications"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"All notifications should be read\", function () {",
+                  "    const notifications = pm.response.json();",
+                  "    notifications.forEach(n => {",
+                  "        pm.expect(n.isRead).to.be.true;",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "8. Error Cases",
+      "item": [
+        {
+          "name": "Access Without Auth",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/notifications"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Should return 401\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Access With Invalid Token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer invalid_token"
+              }
+            ],
+            "url": "{{baseUrl}}/notifications"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Should return 401\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

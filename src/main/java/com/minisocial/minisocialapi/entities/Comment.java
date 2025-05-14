@@ -5,6 +5,10 @@ import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import jakarta.json.bind.annotation.JsonbDateFormat;
+
+import com.minisocial.minisocialapi.dtos.CommentDTO;
+
 @Entity
 @Table(name = "comments")
 public class Comment implements Serializable {
@@ -17,6 +21,7 @@ public class Comment implements Serializable {
     @Column(nullable = false, length = 500)
     private String content;
     
+    @JsonbDateFormat("yyyy-MM-dd'T'HH:mm:ss")
     @Column(nullable = false)
     private LocalDateTime createdAt;
     
@@ -70,6 +75,9 @@ public class Comment implements Serializable {
 
     public void setPost(Post post) {
         this.post = post;
+        if(post != null && !post.getComments().contains(this)) {
+            post.getComments().add(this);
+        }
     }
 
     public User getUser() {
@@ -79,4 +87,14 @@ public class Comment implements Serializable {
     public void setUser(User user) {
         this.user = user;
     }
+    public Comment(Long id, String content, LocalDateTime createdAt, User user, Post post) {
+        this.id = id;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.user = user;
+        this.post = post;
+    }
+
+
+
 }

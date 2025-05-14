@@ -3,6 +3,7 @@ package com.minisocial.minisocialapi.resources;
 import com.minisocial.minisocialapi.dtos.UserDTO;
 // import com.minisocial.minisocialapi.dtos.UserDTO;
 import com.minisocial.minisocialapi.entities.User;
+import com.minisocial.minisocialapi.errors.ConflictException;
 import com.minisocial.minisocialapi.services.UserService;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +28,15 @@ public class UserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response signup(User user) {
-        userService.signup(user);
+
+        try{
+            userService.signup(user);
+        }catch(BadRequestException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }catch(ConflictException e){
+            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
+        }
+
         return Response.status(Response.Status.CREATED).build();
     }
 
@@ -51,7 +60,7 @@ public class UserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateProfile(@PathParam("userId") Long userId, UserDTO updateParams, @Context HttpServletRequest ctx) {
-        Long ctxUserId = (Long) ctx.getAttribute(ctxUserIdAttributeName);
+        Long ctxUserId = Long.parseLong(ctx.getAttribute(ctxUserIdAttributeName).toString());
 
         UserDTO userDTO =  userService.updateProfile(ctxUserId, userId, updateParams);
 

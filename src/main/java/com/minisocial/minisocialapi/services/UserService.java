@@ -47,9 +47,15 @@ public class UserService {
     // TODO(Mustafa-Mahmoud-5): implement DTOs for params and responses
     // signin
     public String signinUser(User userParams) {
+        //DEBUGGING
+        System.out.println("\tsigining  up user");
+
         if (utils.isNull(userParams.getEmail()) || utils.isNull(userParams.getPassword())) {
             throw new BadRequestException("Email and password are required.");
         }
+
+        //DEBUGGING
+        System.out.println("\tuserParams.getEmail() : " + userParams.getEmail());
 
         User user = userRepository.findByEmail(userParams.getEmail());
 
@@ -60,6 +66,9 @@ public class UserService {
         if (!isPasswordsMatch(userParams.getPassword(), user.getPassword())) {
             throw new UnauthorizedException("Invalid Password");
         }
+
+        //DEBUGGING
+        System.out.println("\treturning token");
 
         return JwtUtil.generateToken(user.getId());
     }

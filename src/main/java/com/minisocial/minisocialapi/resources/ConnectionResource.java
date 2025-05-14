@@ -8,6 +8,7 @@ import com.minisocial.minisocialapi.entities.FriendRequest;
 import com.minisocial.minisocialapi.entities.User;
 import com.minisocial.minisocialapi.repositories.UserRepository;
 import com.minisocial.minisocialapi.services.FriendRequestService;
+
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.*;
@@ -34,7 +35,8 @@ public class ConnectionResource {
     public Response sendFriendRequest(FriendRequestDTO friendRequestDTO, @Context HttpServletRequest request) {
         String userIdStr = request.getAttribute("ctxUserId").toString();
         Long userId = Long.parseLong(userIdStr);
-        
+
+        friendRequestDTO.setFromUserId(userId);
         friendRequestService.sendFriendRequest(friendRequestDTO, userId);
         
         return Response.status(Response.Status.CREATED)

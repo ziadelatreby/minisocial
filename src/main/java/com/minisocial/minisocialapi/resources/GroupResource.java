@@ -25,12 +25,13 @@ public class GroupResource {
     private final String ctxUserIdAttributeName = "ctxUserId";
 
 
+    // @POST
+    // @Path("/")
     @POST
-    @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createGroup(Group group, @Context HttpServletRequest ctx) {
-        Long ctxUserId = (Long) ctx.getAttribute(ctxUserIdAttributeName);
+        Long ctxUserId = Long.parseLong((String) ctx.getAttribute(ctxUserIdAttributeName));
         groupService.createGroup(group, ctxUserId);
         return Response.status(Response.Status.CREATED).build();
     }
@@ -39,7 +40,7 @@ public class GroupResource {
     @Path("/{id}/join")
     @Produces(MediaType.APPLICATION_JSON)
     public Response joinGroup(@PathParam("id") Long groupId, @Context HttpServletRequest ctx) {
-        Long ctxUserId = (Long) ctx.getAttribute(ctxUserIdAttributeName);
+        Long ctxUserId = Long.parseLong((String) ctx.getAttribute(ctxUserIdAttributeName));
         GROUP_TYPE type = groupService.joinGroup(groupId, ctxUserId);
         String message;
         if (type == GROUP_TYPE.OPEN) {
@@ -57,8 +58,17 @@ public class GroupResource {
     @Path("/{groupId}/requests/{userId}/accept")
     @Produces(MediaType.APPLICATION_JSON)
     public Response acceptJoinRequest(@PathParam("groupId") Long groupId, @PathParam("userId") Long targetUserId, @Context HttpServletRequest ctx) {
-        Long ctxUserId = (Long) ctx.getAttribute(ctxUserIdAttributeName);
-        groupService.acceptJoinRequest(groupId, targetUserId, ctxUserId);
+        Long ctxUserId = Long.parseLong((String) ctx.getAttribute(ctxUserIdAttributeName));
+        try {
+            groupService.acceptJoinRequest(groupId, targetUserId, ctxUserId);
+        } catch (BadRequestException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        } catch (NotAuthorizedException e) {
+            return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
+        }
+
         return Response.ok().build();
     }
 
@@ -66,7 +76,7 @@ public class GroupResource {
     @Path("/{groupId}/requests/{userId}/reject")
     @Produces(MediaType.APPLICATION_JSON)
     public Response rejectJoinRequest(@PathParam("groupId") Long groupId, @PathParam("userId") Long targetUserId, @Context HttpServletRequest ctx) {
-        Long ctxUserId = (Long) ctx.getAttribute(ctxUserIdAttributeName);
+        Long ctxUserId = Long.parseLong((String) ctx.getAttribute(ctxUserIdAttributeName));
         groupService.rejectJoinRequest(groupId, targetUserId, ctxUserId);
         return Response.ok().build();
     }
@@ -75,7 +85,7 @@ public class GroupResource {
     @DELETE
     @Path("/{groupId}/members/{targetUserId}")
     public Response kickMember(@PathParam("groupId") Long groupId, @PathParam("targetUserId") Long targetUserId, @Context HttpServletRequest ctx) {
-        Long ctxUserId = (Long) ctx.getAttribute(ctxUserIdAttributeName);
+        Long ctxUserId = Long.parseLong((String) ctx.getAttribute(ctxUserIdAttributeName));
         groupService.kickMember(groupId, targetUserId, ctxUserId);
         return Response.noContent().build();
     }
@@ -83,7 +93,7 @@ public class GroupResource {
     @PUT
     @Path("/{groupId}/members/{targetUserId}/promote")
     public Response promoteMember(@PathParam("groupId") Long groupId, @PathParam("targetUserId") Long targetUserId, @Context HttpServletRequest ctx) {
-        Long ctxUserId = (Long) ctx.getAttribute(ctxUserIdAttributeName);
+        Long ctxUserId = Long.parseLong((String) ctx.getAttribute(ctxUserIdAttributeName));
         groupService.promoteMemberToAdmin(groupId, targetUserId, ctxUserId);
         return Response.ok().build();
     }
@@ -92,8 +102,8 @@ public class GroupResource {
     @Path("/{groupId}/requests")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getJoinRequests(@PathParam("groupId") Long groupId, @Context HttpServletRequest ctx) {
-        Long ctxUserId = (Long) ctx.getAttribute(ctxUserIdAttributeName);
-        List<User> res = groupService.getGroupJoinRequests(groupId, ctxUserId);
+        Long ctxUserId = Long.parseLong((String) ctx.getAttribute(ctxUserIdAttributeName));
+        List<UserDTO> res = groupService.getGroupJoinRequests(groupId, ctxUserId);
         return Response.status(Response.Status.OK).entity(res).type(MediaType.APPLICATION_JSON).build();
     }
 }

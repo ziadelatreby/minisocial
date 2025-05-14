@@ -1,0 +1,532 @@
+{
+    "info": {
+        "_postman_id": "unique-id-here",
+        "name": "MiniSocial Complete Test Suite",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "1. User Setup",
+            "item": [
+                {
+                    "name": "Register Alice",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"alice@example.com\",\n    \"password\": \"password123\",\n    \"name\": \"Alice Smith\",\n    \"bio\": \"Group admin user\",\n    \"role\": \"member\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/users/signup",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["users", "signup"]
+                        }
+                    }
+                },
+                {
+                    "name": "Register Bob",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"bob@example.com\",\n    \"password\": \"password123\",\n    \"name\": \"Bob Johnson\",\n    \"bio\": \"Regular user\",\n    \"role\": \"member\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/users/signup",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["users", "signup"]
+                        }
+                    }
+                },
+                {
+                    "name": "Register Charlie",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"charlie@example.com\",\n    \"password\": \"password123\",\n    \"name\": \"Charlie Brown\",\n    \"bio\": \"Group member\",\n    \"role\": \"member\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/users/signup",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["users", "signup"]
+                        }
+                    }
+                },
+                {
+                    "name": "Login Alice",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "pm.environment.set(\"aliceToken\", jsonData.token);",
+                                    "pm.environment.set(\"aliceId\", jsonData.userId);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"alice@example.com\",\n    \"password\": \"password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/users/signin",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["users", "signin"]
+                        }
+                    }
+                },
+                {
+                    "name": "Login Bob",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "pm.environment.set(\"bobToken\", jsonData.token);",
+                                    "pm.environment.set(\"bobId\", jsonData.userId);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"bob@example.com\",\n    \"password\": \"password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/users/signin",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["users", "signin"]
+                        }
+                    }
+                },
+                {
+                    "name": "Login Charlie",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "pm.environment.set(\"charlieToken\", jsonData.token);",
+                                    "pm.environment.set(\"charlieId\", jsonData.userId);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"charlie@example.com\",\n    \"password\": \"password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/users/signin",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["users", "signin"]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "2. Group Creation and Management",
+            "item": [
+                {
+                    "name": "Create Open Group (Alice)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "pm.environment.set(\"openGroupId\", jsonData.id);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{aliceToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Open Discussion\",\n    \"description\": \"Open group for everyone\",\n    \"type\": \"OPEN\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/groups",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["groups"]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Closed Group (Alice)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "pm.environment.set(\"closedGroupId\", jsonData.id);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{aliceToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Private Club\",\n    \"description\": \"Closed group with approval\",\n    \"type\": \"CLOSED\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/groups",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["groups"]
+                        }
+                    }
+                },
+                {
+                    "name": "Bob Joins Open Group",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{bobToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/groups/{{openGroupId}}/join",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["groups", "{{openGroupId}}", "join"]
+                        }
+                    }
+                },
+                {
+                    "name": "Charlie Requests to Join Closed Group",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{charlieToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/groups/{{closedGroupId}}/join",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["groups", "{{closedGroupId}}", "join"]
+                        }
+                    }
+                },
+                {
+                    "name": "Alice Checks Join Requests",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{aliceToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/groups/{{closedGroupId}}/requests",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["groups", "{{closedGroupId}}", "requests"]
+                        }
+                    }
+                },
+                {
+                    "name": "Alice Accepts Charlie's Request",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{aliceToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/groups/{{closedGroupId}}/requests/{{charlieId}}/accept",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["groups", "{{closedGroupId}}", "requests", "{{charlieId}}", "accept"]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "3. Friend Connections",
+            "item": [
+                {
+                    "name": "Bob Sends Friend Request to Charlie",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{bobToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"toUserId\": {{charlieId}}\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/connections/friend-requests",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["connections", "friend-requests"]
+                        }
+                    }
+                },
+                {
+                    "name": "Charlie Checks Friend Requests",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{charlieToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/connections/user/{{charlieId}}/friend-requests",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["connections", "user", "{{charlieId}}", "friend-requests"]
+                        }
+                    }
+                },
+                {
+                    "name": "Charlie Accepts Bob's Request",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{charlieToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"action\": \"accept\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/connections/friend-requests/{{bobId}}",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["connections", "friend-requests", "{{bobId}}"]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "4. Notification Verification",
+            "item": [
+                {
+                    "name": "Check Alice's Notifications (Group Admin)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{aliceToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/notifications",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["notifications"]
+                        }
+                    }
+                },
+                {
+                    "name": "Check Charlie's Notifications (Group Join & Friend)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{charlieToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/notifications",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["notifications"]
+                        }
+                    }
+                },
+                {
+                    "name": "Check Bob's Notifications (Friend Request)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{bobToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/notifications",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["notifications"]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "5. Group Activity",
+            "item": [
+                {
+                    "name": "Post in Open Group (Bob)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{bobToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"content\": \"Hello everyone in the open group!\",\n    \"groupId\": {{openGroupId}}\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/posts",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["posts"]
+                        }
+                    }
+                },
+                {
+                    "name": "Post in Closed Group (Charlie)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{charlieToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"content\": \"My first post in the closed group!\",\n    \"groupId\": {{closedGroupId}}\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/posts",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["posts"]
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [""]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [""]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:8080/minisocial-api-1.0-SNAPSHOT",
+            "type": "string"
+        }
+    ]
+}
